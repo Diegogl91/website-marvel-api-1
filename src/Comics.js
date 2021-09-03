@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import md5 from 'md5';
 import './Home.css';
 
-const Home = () => {
+const Comics = () => {
 
     const [characters, setCharacters] = useState(null);
     const [comics, setComics] = useState(null);
@@ -26,8 +26,8 @@ const Home = () => {
             });
     }
 
-    const getComics = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/v1/public/comics?ts=1&apikey=${process.env.REACT_APP_PUBLIC_KEY}&hash=${hash}`)
+    const getComics = (offset = 0, limit = 20) => {
+        fetch(`${process.env.REACT_APP_API_URL}/v1/public/comics?ts=1&apikey=${process.env.REACT_APP_PUBLIC_KEY}&hash=${hash}&limit=${limit}&offset=${offset}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
@@ -43,12 +43,12 @@ const Home = () => {
         <div className="container">
             <div className="row">
                 <div className="col-md-12">
-                    <h1>Home</h1>
+                    <h1>Comics</h1>
                 </div>
                 <div className="col-md-12">
                     {
-                        !!characters &&
-                        "total paginas: " + Math.ceil(characters.data.total / characters.data.limit)
+                        !!comics &&
+                        "total paginas: " + Math.ceil(comics.data.total / comics.data.limit)
                     }
                 </div>
                 <div className="col-md-12">
@@ -62,7 +62,7 @@ const Home = () => {
                             <li className={"page-item " + (active === 0 ? " active" : "")}>
                                 <a className="page-link" href="#" onClick={(e) => {
                                     e.preventDefault();
-                                    getCharacters(0 * characters.data.limit);
+                                    getComics(0 * comics.data.limit);
                                     setActive(0);
                                 }}>
                                     1
@@ -71,7 +71,7 @@ const Home = () => {
                             <li className={"page-item" + (active === 1 ? " active" : "")}>
                                 <a className="page-link" href="#" onClick={(e) => {
                                     e.preventDefault();
-                                    getCharacters(1 * characters.data.limit);
+                                    getComics(1 * comics.data.limit);
                                     setActive(1);
                                 }}>
                                     2
@@ -80,7 +80,7 @@ const Home = () => {
                             <li className={"page-item" + (active === 2 ? " active" : "")}>
                                 <a className="page-link" href="#" onClick={(e) => {
                                     e.preventDefault();
-                                    getCharacters(2 * characters.data.limit);
+                                    getComics(2 * comics.data.limit);
                                     setActive(2);
                                 }}>
                                     3
@@ -89,7 +89,7 @@ const Home = () => {
                             <li className={"page-item" + (active === 3 ? " active" : "")}>
                                 <a className="page-link" href="#" onClick={(e) => {
                                     e.preventDefault();
-                                    getCharacters(3 * characters.data.limit);
+                                    getComics(3 * comics.data.limit);
                                     setActive(3);
                                 }}>
                                     4
@@ -98,7 +98,7 @@ const Home = () => {
                             <li className={"page-item" + (active === 4 ? " active" : "")}>
                                 <a className="page-link" href="#" onClick={(e) => {
                                     e.preventDefault();
-                                    getCharacters(4 * characters.data.limit);
+                                    getComics(4 * comics.data.limit);
                                     setActive(4);
                                 }}>
                                     5
@@ -120,7 +120,7 @@ const Home = () => {
                             <div className="card detail">
                                 <img src={`${selected.thumbnail.path}.${selected.thumbnail.extension}`} className="card-img-top" alt="..." />
                                 <div className="card-body">
-                                    <h5 className="card-title">{selected.name}</h5>
+                                    <h5 className="card-title">{selected.title}</h5>
                                     <p className="card-text">
                                         {selected.description}
                                     </p>
@@ -140,9 +140,9 @@ const Home = () => {
                             <span className="visually-hidden">Loading...</span>
                         </div>
                     ) :
-                        !!characters &&
-                        characters.data.results.map((character, index) => {
-                            const { name, description, thumbnail } = character;
+                        !!comics &&
+                        comics.data.results.map((comic, index) => {
+                            const { title, description, thumbnail } = comic;
                             const { path, extension } = thumbnail;
                             return (
                                 <div className="col-md-6" key={index}>
@@ -153,14 +153,14 @@ const Home = () => {
                                             </div>
                                             <div className="col-md-8">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">{name}</h5>
+                                                    <h5 className="card-title">{title}</h5>
                                                     <p className="card-text">
                                                         {description}
                                                     </p>
                                                     <p className="card-text">
                                                         <small className="text-muted">Last updated 3 mins ago</small>
                                                     </p>
-                                                    <button className="btn btn-outline-success" onClick={() => setSelected(character)}>
+                                                    <button className="btn btn-outline-success" onClick={() => setSelected(comic)}>
                                                         Show Detail
                                                     </button>
                                                 </div>
@@ -176,4 +176,4 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default Comics;
